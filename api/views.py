@@ -128,18 +128,3 @@ def fillna_df_columns_zero(df, list_columns:list):
     for i in list_columns:
         df[i] = df[i].fillna(0)
     return df
-
-class batch_insert(APIView):
-    def post(self, request, format=None):
-        data = request.data
-        if not isinstance(data, list):
-            return Response({"error": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
-
-        if len(data) > 1000:
-            return Response({"error": "Batch size exceeds limit"}, status=status.HTTP_400_BAD_REQUEST)
-
-        serializer = departments_serializer(data=data, many=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Batch insert successful"}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
